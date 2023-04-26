@@ -1,0 +1,6 @@
+#auto-generated files
+/target
+#Clion configuration
+/.idea
+#Cargo.lock is not needed
+Cargo.lock
