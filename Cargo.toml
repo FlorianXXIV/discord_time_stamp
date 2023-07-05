@@ -7,7 +7,7 @@ repository = "https://github.com/FlorianXXIV/discord_time_stamp"
 edition = "2021"
 license-file = "LICENSE"
 readme = "README.md"
-documentation = "docs.rs/discord_time_stamp"
+documentation = "https://docs.rs/discord_time_stamp"
 keywords = ["discord", "bot", "unix-timestamps"]
 
 
