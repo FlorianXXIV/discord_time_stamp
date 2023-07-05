@@ -10,5 +10,13 @@ readme = "README.md"
 
 [dependencies]
 time = { version = "0.3.*", features = ["macros", "parsing"] }
-serenity = "0.11.5"
+serenity = {version="0.11.5", default-features=false, features=[
+    "client",
+    "gateway",
+    "rustls_backend",
+    "model",
+    "framework",
+    "standard_framework"
+]}
 tokio = { version="1.21.2", features = ["macros", "rt-multi-thread"] }
+dotenv = "0.15.0"
