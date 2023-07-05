@@ -1,36 +1,28 @@
-pub mod unix_time_stamp;
-
-use std::{env, io};
 use std::collections::{HashMap, HashSet};
+use std::env;
 use std::sync::Arc;
 
 use serenity::async_trait;
 use serenity::Client;
 use serenity::client::{Context, EventHandler};
-use serenity::client::bridge::gateway::{ShardId, ShardManager};
-use serenity::framework::standard::buckets::{LimitedFor, RevertBucket};
-use serenity::framework::standard::macros::{check, command, group, help, hook};
+use serenity::client::bridge::gateway::ShardManager;
 use serenity::framework::standard::{
-    help_commands,
     Args,
-    CommandGroup,
-    CommandOptions,
     CommandResult,
     DispatchError,
-    HelpOptions,
-    Reason,
     StandardFramework,
 };
+use serenity::framework::standard::buckets::LimitedFor;
+use serenity::framework::standard::macros::{command, group, hook};
 use serenity::http::Http;
-use serenity::model::channel::{Channel, Message};
+use serenity::model::channel::Message;
 use serenity::model::gateway::{GatewayIntents, Ready};
-use serenity::model::id::UserId;
-use serenity::model::permissions::Permissions;
 use serenity::prelude::*;
-
 use tokio::sync::Mutex;
+
 use crate::unix_time_stamp::TimeStamp;
 
+pub mod unix_time_stamp;
 
 struct ShardManagerContainer;
 
@@ -62,7 +54,7 @@ impl EventHandler for Handler {
 }
 
 #[group]
-#[commands(time)]
+#[commands(time,time_rel)]
 struct General;
 
 #[hook]
@@ -186,26 +178,14 @@ async fn time(ctx:&Context, msg:&Message,mut args:Args) -> CommandResult {
     Ok(())
 }
 
-//For safekeeping
-/*fn main() {
-    let mut buffer = String::new();
+#[command]
+#[bucket = "stamp"]
+async fn time_rel(ctx:&Context, msg:&Message,mut args:Args) -> CommandResult {
+    let date = args.single::<String>()?;
+    let time = args.single::<String>()?;
+    let offset = args.single::<String>()?;
 
-    println!("Input date as [year]-[month]-[day]");
-    io::stdin().read_line(&mut buffer).expect("failed to read line");
-    let date = buffer.clone();
-    buffer.clear();
-    println!("Input time as [hour]:[minute]");
-    io::stdin().read_line(&mut buffer).expect("failed to read line");
-    let time = buffer.clone();
-    buffer.clear();
-    println!("Input timezone (UTC offset) as +/-[hour]:[minute]");
-    io::stdin().read_line(&mut buffer).expect("failed to read line");
-    let offset = buffer.clone();
-    buffer.clear();
+    msg.channel_id.say(&ctx.http, TimeStamp::get_rel_time_stamp(&date, &time, &offset)).await?;
 
-    let unix = unix_from_datetime(date.trim(), time.trim(), offset.trim());
-
-    println!("<t:{}>", unix);
-    println!("<t:{}:R>", unix);
-
-}*/
+    Ok(())
+}

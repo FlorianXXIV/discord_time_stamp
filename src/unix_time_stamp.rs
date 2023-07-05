@@ -22,6 +22,9 @@ impl TimeStamp{
     pub fn get_discord_time_stamp(date:&str, time:&str, offset:&str) -> String {
         "<t:".to_owned()+ &*TimeStamp::unix_from_datetime(date, time, offset).to_string() +">"
     }
+    pub fn get_rel_time_stamp(date:&str, time:&str, offset:&str) -> String {
+        "<t:".to_owned()+ &*TimeStamp::unix_from_datetime(date, time, offset).to_string() +":R>"
+    }
 }
 
 
