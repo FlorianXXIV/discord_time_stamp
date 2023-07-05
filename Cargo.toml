@@ -1,7 +1,7 @@
 [package]
 name = "discord_time_stamp"
 authors = ["FlorianXXIV"]
-version = "0.2.1"
+version = "0.2.2"
 description = "A discord bot that prints discord timestamps"
 repository = "https://github.com/FlorianXXIV/discord_time_stamp"
 edition = "2021"
