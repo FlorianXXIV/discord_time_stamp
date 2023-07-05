@@ -1,7 +1,7 @@
 [package]
 name = "discord_time_stamp"
 authors = ["FlorianXXIV"]
-version = "0.1.1"
+version = "0.2.0"
 edition = "2021"
 license-file = "LICENSE"
 readme = "README.md"
