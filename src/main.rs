@@ -7,16 +7,19 @@ use serenity::Client;
 use serenity::client::{Context, EventHandler};
 use serenity::client::bridge::gateway::ShardManager;
 use serenity::framework::standard::{
+    help_commands,
     Args,
+    CommandGroup,
     CommandResult,
     DispatchError,
-    StandardFramework,
-};
+    HelpOptions,
+    StandardFramework};
 use serenity::framework::standard::buckets::LimitedFor;
-use serenity::framework::standard::macros::{command, group, hook};
+use serenity::framework::standard::macros::{command, group, hook, help};
 use serenity::http::Http;
 use serenity::model::channel::Message;
 use serenity::model::gateway::{GatewayIntents, Ready};
+use serenity::model::id::UserId;
 use serenity::prelude::*;
 use tokio::sync::Mutex;
 
@@ -54,8 +57,29 @@ impl EventHandler for Handler {
 }
 
 #[group]
-#[commands(time,time_rel)]
+#[commands(time,time_rel,time_f)]
 struct General;
+
+todo!("Add better help");
+#[help]
+#[individual_command_tip="Hey\n\n\
+    If you want more info on a command, just pass the command as an argument :)"]
+#[command_not_found_text = "Could not find '{}'."]
+#[max_levenshtein_distance(3)]
+#[lacking_permissions="Hide"]
+#[lacking_role="Nothing"]
+#[wrong_channel="Strike"]
+async fn my_help(
+    context:&Context,
+    msg:&Message,
+    args:Args,
+    help_options:&'static HelpOptions,
+    groups:&[&'static CommandGroup],
+    owners: HashSet<UserId>,
+) -> CommandResult {
+    let _ = help_commands::with_embeds(context,msg,args,help_options,groups,owners).await?;
+    Ok(())
+}
 
 #[hook]
 async fn before(ctx:&Context, msg:&Message, command_name:&str) -> bool {
@@ -145,7 +169,8 @@ async fn main(){
             .limit_for(LimitedFor::Channel)
             .await_ratelimits(1)
             .delay_action(delay_action)).await
-        .group(&GENERAL_GROUP);
+        .group(&GENERAL_GROUP)
+        .help(&MY_HELP);
 
     let intents = GatewayIntents::all();
 
@@ -186,6 +211,20 @@ async fn time_rel(ctx:&Context, msg:&Message,mut args:Args) -> CommandResult {
     let offset = args.single::<String>()?;
 
     msg.channel_id.say(&ctx.http, TimeStamp::get_rel_time_stamp(&date, &time, &offset)).await?;
+
+    Ok(())
+}
+
+#[command]
+#[bucket = "stamp"]
+async fn time_f(ctx:&Context, msg:&Message,mut args:Args) -> CommandResult {
+    let date = args.single::<String>()?;
+    let time = args.single::<String>()?;
+    let offset = args.single::<String>()?;
+    let formatter = args.single::<String>()?;
+
+    msg.channel_id.say(&ctx.http,
+                       TimeStamp::get_dynamic_time_stamp(&date, &time, &offset, &formatter)).await?;
 
     Ok(())
 }

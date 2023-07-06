@@ -25,6 +25,9 @@ impl TimeStamp{
     pub fn get_rel_time_stamp(date:&str, time:&str, offset:&str) -> String {
         "<t:".to_owned()+ &*TimeStamp::unix_from_datetime(date, time, offset).to_string() +":R>"
     }
+    pub fn get_dynamic_time_stamp(date:&str,time:&str,offset:&str,formatter:&str) -> String{
+        "<t:".to_owned()+ &*TimeStamp::unix_from_datetime(date,time,offset).to_string()+":"+formatter+">"
+    }
 }
 
 
