@@ -60,7 +60,7 @@ impl EventHandler for Handler {
 #[commands(time,time_rel,time_f)]
 struct General;
 
-todo!("Add better help");
+// TODO Add better help
 #[help]
 #[individual_command_tip="Hey\n\n\
     If you want more info on a command, just pass the command as an argument :)"]
