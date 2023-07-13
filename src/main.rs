@@ -60,6 +60,10 @@ impl EventHandler for Handler {
 #[commands(time,time_rel,time_f)]
 struct General;
 
+#[group]
+#[commands(stamp,stamp_rel,stamp_f)]
+struct Stamps;
+
 // TODO Add better help
 #[help]
 #[individual_command_tip="Hey\n\n\
@@ -170,6 +174,7 @@ async fn main(){
             .await_ratelimits(1)
             .delay_action(delay_action)).await
         .group(&GENERAL_GROUP)
+        .group(&STAMPS_GROUP)
         .help(&MY_HELP);
 
     let intents = GatewayIntents::all();
@@ -225,6 +230,46 @@ async fn time_f(ctx:&Context, msg:&Message,mut args:Args) -> CommandResult {
 
     msg.channel_id.say(&ctx.http,
                        TimeStamp::get_dynamic_time_stamp(&date, &time, &offset, &formatter)).await?;
+
+    Ok(())
+}
+
+#[command]
+#[bucket = "stamp"]
+async fn stamp(ctx:&Context, msg:&Message,mut args:Args) -> CommandResult {
+    let date = args.single::<String>()?;
+    let time = args.single::<String>()?;
+    let offset = args.single::<String>()?;
+
+    msg.channel_id.say(&ctx.http,
+                       TimeStamp::get_actual_time_stamp(&date, &time, &offset)).await?;
+
+    Ok(())
+}
+
+#[command]
+#[bucket = "stamp"]
+async fn stamp_rel(ctx:&Context, msg:&Message,mut args:Args) -> CommandResult {
+    let date = args.single::<String>()?;
+    let time = args.single::<String>()?;
+    let offset = args.single::<String>()?;
+
+    msg.channel_id.say(&ctx.http,
+                       TimeStamp::get_rel_actual_time_stamp(&date, &time, &offset)).await?;
+
+    Ok(())
+}
+
+#[command]
+#[bucket = "stamp"]
+async fn stamp_f(ctx:&Context, msg:&Message,mut args:Args) -> CommandResult {
+    let date = args.single::<String>()?;
+    let time = args.single::<String>()?;
+    let offset = args.single::<String>()?;
+    let formatter = args.single::<String>()?;
+
+    msg.channel_id.say(&ctx.http,
+                       TimeStamp::get_dynamic_actual_time_stamp(&date, &time, &offset, &formatter)).await?;
 
     Ok(())
 }

@@ -93,6 +93,30 @@ impl TimeStamp{
             + formatter
             + ">"
     }
+    pub fn get_actual_time_stamp(date:&str, time:&str, offset:&str) -> String {
+        "t:".to_owned() +
+            TimeStamp::unix_from_datetime(date, time, offset)
+                .expect("could not parse datetime")
+                .to_string()
+                .as_str()
+    }
+    pub fn get_rel_actual_time_stamp(date:&str, time:&str, offset:&str) -> String {
+        "t:".to_owned() +
+            TimeStamp::unix_from_datetime(date, time, offset)
+                .expect("could not parse datetime")
+                .to_string()
+                .as_str()
+            + ":R"
+    }
+    pub fn get_dynamic_actual_time_stamp(date:&str,time:&str,offset:&str,formatter:&str) -> String{
+        "t:".to_owned() +
+            TimeStamp::unix_from_datetime(date,time,offset)
+                .expect("could not parse datetime")
+                .to_string()
+                .as_str()
+            + ":"
+            + formatter
+    }
 }
 
 
